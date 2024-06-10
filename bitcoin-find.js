@@ -1,17 +1,16 @@
 import CoinKey from 'coinkey';
 import walletsArray from './wallets.js';
 import chalk from 'chalk'
-import fs from 'fs';
+import fs from 'node:fs';
 const walletsSet = new Set(walletsArray);
 
 async function encontrarBitcoins(key, min, max, shouldStop){
 
     let segundos = 0;
     let pkey = 0;
-    const um = BigInt(1);
     const startTime = Date.now()
 
-    let zeroes = new Array(65).fill('');
+    const zeroes = new Array(65).fill('');
     for (let i=1;i<64;i++){
         zeroes[i] = '0'.repeat(64 - i);
     }
@@ -29,7 +28,7 @@ async function encontrarBitcoins(key, min, max, shouldStop){
         if (Date.now() - startTime > segundos){
             segundos += 1000
             console.log(segundos/1000);
-            if (segundos % 10000 == 0){
+            if (segundos % 10000 === 0){
               const tempo = (Date.now() - startTime) / 1000;
               console.clear();
               console.log('Resumo: ')
@@ -47,7 +46,7 @@ async function encontrarBitcoins(key, min, max, shouldStop){
             }
         }
     
-        let publicKey = generatePublic(pkey)
+        const publicKey = generatePublic(pkey)
         if (walletsSet.has(publicKey)){
             const tempo = (Date.now() - startTime)/1000
             console.log('Velocidade:', (Number(key) - Number(min))/ tempo, ' chaves por segundo')
@@ -75,13 +74,13 @@ async function encontrarBitcoins(key, min, max, shouldStop){
 }
 
 function generatePublic(privateKey){
-    let _key = new CoinKey(new Buffer(privateKey, 'hex'))
+    const _key = new CoinKey(new Buffer(privateKey, 'hex'))
     _key.compressed = true
     return _key.publicAddress
 }
 
 function generateWIF(privateKey){
-    let _key = new CoinKey(new Buffer(privateKey, 'hex'))
+    const _key = new CoinKey(new Buffer(privateKey, 'hex'))
     return _key.privateWif
 }
 
